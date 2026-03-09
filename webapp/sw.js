@@ -1,4 +1,4 @@
-const CACHE = "pontulanota-v1";
+const CACHE = "pontulanota-v2";
 const ASSETS = [
   "./",
   "./index.html",
