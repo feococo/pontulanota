@@ -1,6 +1,6 @@
 {
-  "name": "Corrector de exámenes by David Merás",
-  "short_name": "Corrector",
+  "name": "PonTuLaNota by David Merás",
+  "short_name": "PonTuLaNota",
   "description": "Corrección de exámenes por preguntas o por ejercicios (sobre 10).",
   "start_url": "./index.html",
   "display": "standalone",

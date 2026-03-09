@@ -1,4 +1,4 @@
-const CACHE = "corrector-examenes-v1";
+const CACHE = "pontulanota-v1";
 const ASSETS = [
   "./",
   "./index.html",
