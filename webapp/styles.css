@@ -11,6 +11,12 @@
   --bad: #b91c1c;
 }
 
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -32,7 +38,12 @@ body {
 
 .app-shell {
   width: min(780px, 92vw);
-  margin: 22px auto 40px;
+  height: 100dvh;
+  margin: 0 auto;
+  padding: 22px 0 40px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .hero h1 {
