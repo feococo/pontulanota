@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="PonTuLaNota" />
+    <meta name="theme-color" content="#0369a1" />
+    <title>PonTuLaNota</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <p class="badge">WEBAPP</p>
+        <h1>PonTuLaNota by David Merás</h1>
+        <p class="sub">Nota total siempre sobre 10.</p>
+      </header>
+
+      <section class="card">
+        <h2>Modo de corrección</h2>
+        <div class="mode-switch">
+          <label><input type="radio" name="modo" value="preguntas" checked /> Por preguntas</label>
+          <label><input type="radio" name="modo" value="ejercicios" /> Por ejercicios</label>
+        </div>
+
+        <label id="totalLabel" for="totalInput">Total de preguntas</label>
+        <input id="totalInput" type="number" min="1" inputmode="numeric" placeholder="Ejemplo: 20" />
+
+        <button id="btnIniciar" class="btn btn-primary">Iniciar corrección</button>
+      </section>
+
+      <section class="card" id="sessionCard">
+        <div class="session-head">
+          <h2 id="alumnoLabel">Alumno 1</h2>
+          <span id="modoActivo" class="pill">Modo: Preguntas</span>
+        </div>
+
+        <label id="entradaLabel" for="entradaAlumno">Aciertos del alumno</label>
+        <input id="entradaAlumno" type="text" placeholder="Ejemplo: 17" />
+        <div id="codigoLegend" class="code-legend" hidden>
+          <span><code>b</code> Bien</span>
+          <span><code>b-</code> Bien -</span>
+          <span><code>r</code> Regular</span>
+          <span><code>r-</code> Regular -</span>
+          <span><code>x</code> Mal</span>
+        </div>
+
+        <div class="help" id="helpText">
+          En ejercicios escribe un código sin comas, por ejemplo: <code>bb-rx</code>
+        </div>
+
+        <div class="actions">
+          <button id="btnCalcular" class="btn btn-primary">Calcular nota</button>
+          <button id="btnReiniciar" class="btn btn-ghost">Reiniciar</button>
+        </div>
+
+        <p id="resultado" class="resultado"></p>
+        <ul id="historial" class="historial"></ul>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("./sw.js");
+      }
+    </script>
+  </body>
+</html>
