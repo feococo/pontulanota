@@ -46,6 +46,10 @@ function isIosLandscape() {
   return viewport.width > viewport.height;
 }
 
+function updateIosLandscapeLayout() {
+  document.body.classList.toggle("ios-landscape-compact", isIosLandscape());
+}
+
 function focusEntradaAlumno() {
   if (isIosDevice()) {
     return;
@@ -351,6 +355,7 @@ document.addEventListener("keydown", (event) => {
 
 if (window.visualViewport && isIosDevice()) {
   window.visualViewport.addEventListener("resize", () => {
+    updateIosLandscapeLayout();
     if (document.activeElement !== entradaAlumno || !isIosLandscape()) {
       return;
     }
@@ -361,3 +366,4 @@ if (window.visualViewport && isIosDevice()) {
 }
 
 setUiByMode();
+updateIosLandscapeLayout();

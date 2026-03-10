@@ -38,6 +38,16 @@ body.ios-landscape-lock {
   overflow: hidden;
 }
 
+body.ios-landscape-compact .app-shell {
+  width: min(760px, 94vw);
+  margin: 10px auto 24px;
+  display: block;
+}
+
+body.ios-landscape-compact .card {
+  min-height: auto;
+}
+
 .app-shell {
   width: min(780px, 92vw);
   margin: 22px auto 40px;
@@ -314,6 +324,21 @@ input:focus {
   .card {
     margin-top: 0;
     min-height: 100%;
+  }
+
+  body.ios-landscape-compact .app-shell {
+    width: min(760px, 94vw);
+    display: block;
+    margin: 10px auto 24px;
+  }
+
+  body.ios-landscape-compact .card {
+    margin-top: 14px;
+    min-height: auto;
+  }
+
+  body.ios-landscape-compact .hero {
+    grid-column: auto;
   }
 }
 
