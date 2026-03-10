@@ -37,11 +37,18 @@ function isAppleMobileDevice() {
   return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
 }
 
+function isAppleStandaloneWebapp() {
+  return isAppleMobileDevice() && window.navigator.standalone === true;
+}
+
 function allowGlobalShortcuts() {
   return !isAppleMobileDevice();
 }
 
 function focusEntradaAlumno() {
+  if (isAppleStandaloneWebapp()) {
+    return;
+  }
   entradaAlumno.focus();
 }
 
