@@ -41,33 +41,38 @@
       </section>
 
       <section class="card" id="sessionCard">
-        <div class="session-head">
-          <h2 id="alumnoLabel">Alumno 1</h2>
-          <span id="modoActivo" class="pill">Modo: Preguntas</span>
+        <div class="entry-panel">
+          <div class="session-head">
+            <h2 id="alumnoLabel">Alumno 1</h2>
+            <span id="modoActivo" class="pill">Modo: Preguntas</span>
+          </div>
+
+          <label id="entradaLabel" for="entradaAlumno">Aciertos del alumno</label>
+          <input id="entradaAlumno" type="text" placeholder="Ejemplo: 17" />
+          <div id="codigoLegend" class="code-legend" hidden>
+            <span><code>b</code> Bien</span>
+            <span><code>b-</code> Bien -</span>
+            <span><code>r</code> Regular</span>
+            <span><code>r-</code> Regular -</span>
+            <span><code>x</code> Mal</span>
+          </div>
+
+          <div class="help" id="helpText">
+            En ejercicios escribe un código sin comas, por ejemplo: <code>bb-rx</code>
+          </div>
+
+          <div class="actions">
+            <button id="btnCalcular" class="btn btn-primary">Calcular nota</button>
+            <button id="btnReiniciar" class="btn btn-ghost">Reiniciar</button>
+          </div>
+
+          <p id="resultado" class="resultado"></p>
         </div>
 
-        <label id="entradaLabel" for="entradaAlumno">Aciertos del alumno</label>
-        <input id="entradaAlumno" type="text" placeholder="Ejemplo: 17" />
-        <div id="codigoLegend" class="code-legend" hidden>
-          <span><code>b</code> Bien</span>
-          <span><code>b-</code> Bien -</span>
-          <span><code>r</code> Regular</span>
-          <span><code>r-</code> Regular -</span>
-          <span><code>x</code> Mal</span>
+        <div class="history-panel">
+          <p class="history-title"><strong>Historial:</strong></p>
+          <ul id="historial" class="historial"></ul>
         </div>
-
-        <div class="help" id="helpText">
-          En ejercicios escribe un código sin comas, por ejemplo: <code>bb-rx</code>
-        </div>
-
-        <div class="actions">
-          <button id="btnCalcular" class="btn btn-primary">Calcular nota</button>
-          <button id="btnReiniciar" class="btn btn-ghost">Reiniciar</button>
-        </div>
-
-        <p id="resultado" class="resultado"></p>
-        <p class="history-title"><strong>Historial:</strong></p>
-        <ul id="historial" class="historial"></ul>
       </section>
     </main>
 
