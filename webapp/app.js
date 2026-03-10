@@ -38,11 +38,37 @@ function isIosDevice() {
   return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
 }
 
+function isIosLandscape() {
+  if (!isIosDevice()) {
+    return false;
+  }
+  const viewport = window.visualViewport || window;
+  return viewport.width > viewport.height;
+}
+
 function focusEntradaAlumno() {
   if (isIosDevice()) {
     return;
   }
   entradaAlumno.focus();
+}
+
+function lockIosLandscapeScroll() {
+  if (!isIosLandscape()) {
+    return;
+  }
+  iosScrollLockY = window.scrollY;
+  document.body.classList.add("ios-landscape-lock");
+  document.body.style.top = `-${iosScrollLockY}px`;
+}
+
+function unlockIosLandscapeScroll() {
+  if (!document.body.classList.contains("ios-landscape-lock")) {
+    return;
+  }
+  document.body.classList.remove("ios-landscape-lock");
+  document.body.style.top = "";
+  window.scrollTo(0, iosScrollLockY);
 }
 
 function closeIosKeyboard() {
@@ -299,6 +325,11 @@ entradaAlumno.addEventListener("focus", () => {
     return;
   }
   iosScrollLockY = window.scrollY;
+  lockIosLandscapeScroll();
+});
+
+entradaAlumno.addEventListener("blur", () => {
+  unlockIosLandscapeScroll();
 });
 
 document.addEventListener("keydown", (event) => {
@@ -320,7 +351,7 @@ document.addEventListener("keydown", (event) => {
 
 if (window.visualViewport && isIosDevice()) {
   window.visualViewport.addEventListener("resize", () => {
-    if (document.activeElement !== entradaAlumno) {
+    if (document.activeElement !== entradaAlumno || !isIosLandscape()) {
       return;
     }
     window.requestAnimationFrame(() => {
