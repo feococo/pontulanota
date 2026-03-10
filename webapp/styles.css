@@ -233,6 +233,11 @@ input:focus {
   color: #0f172a;
 }
 
+.history-title {
+  margin: 26px 0 8px;
+  color: var(--ink);
+}
+
 .historial {
   margin: 0;
   padding-left: 20px;
