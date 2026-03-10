@@ -171,10 +171,53 @@ input:focus {
   min-height: 1.2em;
 }
 
+.resultado:has(.result-label) {
+  display: grid;
+  grid-template-columns: auto auto auto 1fr;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.result-label,
+.result-code-label {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.result-score,
+.result-code {
+  font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
+}
+
+.result-code {
+  color: #0f172a;
+}
+
 .historial {
   margin: 0;
   padding-left: 20px;
   color: var(--muted);
+}
+
+.historial-item {
+  display: grid;
+  grid-template-columns: 120px 90px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  font-family: "SFMono-Regular", "Menlo", "Consolas", monospace;
+}
+
+.hist-alumno {
+  font-family: "Avenir Next", "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.hist-nota {
+  color: var(--ok);
+  font-weight: 700;
+}
+
+.hist-codigo {
+  color: #334155;
 }
 
 @media (min-width: 900px) {
@@ -199,5 +242,15 @@ input:focus {
 @media (max-width: 560px) {
   .actions {
     grid-template-columns: 1fr;
+  }
+
+  .resultado:has(.result-label) {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .historial-item {
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
 }

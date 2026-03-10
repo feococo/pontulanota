@@ -81,6 +81,45 @@ function alertMsg(msg) {
   window.alert(msg);
 }
 
+function formatCodigo(raw) {
+  const tokens = tokenizeCode(raw);
+  if (!tokens) {
+    return raw.trim();
+  }
+  return tokens.join(" ");
+}
+
+function renderResultado(notaTxt, raw) {
+  if (state.mode === "ejercicios") {
+    const codigo = formatCodigo(raw);
+    resultado.innerHTML =
+      `<span class="result-label">Nota alumno ${state.alumno}:</span>` +
+      `<span class="result-score">${notaTxt}</span>` +
+      `<span class="result-code-label">Codigo:</span>` +
+      `<span class="result-code">${codigo}</span>`;
+    return;
+  }
+
+  resultado.textContent = `Nota del alumno ${state.alumno}: ${notaTxt}`;
+}
+
+function buildHistorialItem(notaTxt, raw) {
+  const li = document.createElement("li");
+
+  if (state.mode === "ejercicios") {
+    const codigo = formatCodigo(raw);
+    li.className = "historial-item";
+    li.innerHTML =
+      `<span class="hist-alumno">Alumno ${state.alumno}</span>` +
+      `<span class="hist-nota">${notaTxt}</span>` +
+      `<span class="hist-codigo">${codigo}</span>`;
+    return li;
+  }
+
+  li.textContent = `Alumno ${state.alumno}: ${notaTxt}`;
+  return li;
+}
+
 function iniciarSesion() {
   setUiByMode();
   const total = Number.parseInt(totalInput.value.trim(), 10);
@@ -144,9 +183,8 @@ function calcularNota() {
   }
 
   const notaTxt = nota.toFixed(2);
-  resultado.textContent = `Nota del alumno ${state.alumno}: ${notaTxt}/10`;
-  const li = document.createElement("li");
-  li.textContent = `Alumno ${state.alumno}: ${notaTxt}/10`;
+  renderResultado(notaTxt, raw);
+  const li = buildHistorialItem(notaTxt, raw);
   historial.prepend(li);
 
   state.alumno += 1;
