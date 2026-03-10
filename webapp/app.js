@@ -28,6 +28,8 @@ let state = {
   alumno: 1,
 };
 
+let iosScrollLockY = 0;
+
 function getMode() {
   return modeInputs.find((r) => r.checked)?.value || "preguntas";
 }
@@ -41,6 +43,15 @@ function focusEntradaAlumno() {
     return;
   }
   entradaAlumno.focus();
+}
+
+function closeIosKeyboard() {
+  if (!isIosDevice()) {
+    return;
+  }
+  if (document.activeElement === entradaAlumno) {
+    entradaAlumno.blur();
+  }
 }
 
 function setUiByMode() {
@@ -209,6 +220,8 @@ function calcularNota() {
     return;
   }
 
+  closeIosKeyboard();
+
   let nota = 0;
 
   if (state.mode === "preguntas") {
@@ -281,6 +294,13 @@ entradaAlumno.addEventListener("keydown", (event) => {
   }
 });
 
+entradaAlumno.addEventListener("focus", () => {
+  if (!isIosDevice()) {
+    return;
+  }
+  iosScrollLockY = window.scrollY;
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.altKey && event.key === "1") {
     modeInputs.find((r) => r.value === "preguntas").checked = true;
@@ -297,5 +317,16 @@ document.addEventListener("keydown", (event) => {
     reiniciarSesion();
   }
 });
+
+if (window.visualViewport && isIosDevice()) {
+  window.visualViewport.addEventListener("resize", () => {
+    if (document.activeElement !== entradaAlumno) {
+      return;
+    }
+    window.requestAnimationFrame(() => {
+      window.scrollTo(0, iosScrollLockY);
+    });
+  });
+}
 
 setUiByMode();
