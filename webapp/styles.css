@@ -47,14 +47,6 @@ body {
   color: var(--muted);
 }
 
-.install-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 14px;
-  align-items: center;
-  margin-top: 14px;
-}
-
 .badge {
   display: inline-block;
   margin: 0;
@@ -150,17 +142,6 @@ input:focus {
   border: 1px solid var(--line);
 }
 
-.btn-install {
-  background: linear-gradient(135deg, #0f172a, #334155);
-  color: #fff;
-}
-
-.install-hint {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
 .session-head {
   display: flex;
   align-items: center;
@@ -210,7 +191,7 @@ input:focus {
 
 .actions {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
@@ -256,6 +237,10 @@ input:focus {
   margin: 0;
   padding-left: 20px;
   color: var(--muted);
+}
+
+.historial li + li {
+  margin-top: 16px;
 }
 
 .historial-item {

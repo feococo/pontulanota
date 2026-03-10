@@ -17,15 +17,9 @@ const historial = document.getElementById("historial");
 const alumnoLabel = document.getElementById("alumnoLabel");
 const modoActivo = document.getElementById("modoActivo");
 const helpText = document.getElementById("helpText");
-const installBox = document.getElementById("installBox");
-const btnInstalarApp = document.getElementById("btnInstalarApp");
-const installHint = document.getElementById("installHint");
 const btnIniciar = document.getElementById("btnIniciar");
 const btnCalcular = document.getElementById("btnCalcular");
-const btnTerminar = document.getElementById("btnTerminar");
 const btnReiniciar = document.getElementById("btnReiniciar");
-
-let deferredInstallPrompt = null;
 
 let state = {
   started: false,
@@ -36,39 +30,6 @@ let state = {
 
 function getMode() {
   return modeInputs.find((r) => r.checked)?.value || "preguntas";
-}
-
-function isIosMobile() {
-  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
-}
-
-function isAndroidMobile() {
-  return /android/i.test(window.navigator.userAgent);
-}
-
-function isStandalone() {
-  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-}
-
-function updateInstallUi() {
-  const mobileOs = isIosMobile() || isAndroidMobile();
-  if (!mobileOs || isStandalone()) {
-    installBox.hidden = true;
-    return;
-  }
-
-  installBox.hidden = false;
-
-  if (isIosMobile()) {
-    installHint.hidden = false;
-    installHint.textContent = "En iPhone o iPad se instala desde Compartir -> Anadir a pantalla de inicio.";
-    return;
-  }
-
-  installHint.hidden = deferredInstallPrompt !== null;
-  if (!installHint.hidden) {
-    installHint.textContent = "Si el navegador lo permite, podras instalarla desde este boton.";
-  }
 }
 
 function setUiByMode() {
@@ -267,15 +228,6 @@ function calcularNota() {
   entradaAlumno.focus();
 }
 
-function terminarSesion() {
-  if (!state.started) {
-    alertMsg("No hay una sesión activa.");
-    return;
-  }
-  state.started = false;
-  resultado.textContent = "Fin de la corrección.";
-}
-
 function reiniciarSesion() {
   resetSession();
   setUiByMode();
@@ -290,29 +242,8 @@ btnCalcular.addEventListener("click", () => {
   calcularNota();
 });
 
-btnTerminar.addEventListener("click", () => {
-  terminarSesion();
-});
-
 btnReiniciar.addEventListener("click", () => {
   reiniciarSesion();
-});
-
-btnInstalarApp.addEventListener("click", async () => {
-  if (isIosMobile()) {
-    window.alert("Para instalarla en iPhone o iPad, pulsa Compartir y despues 'Anadir a pantalla de inicio'.");
-    return;
-  }
-
-  if (!deferredInstallPrompt) {
-    window.alert("La instalacion no esta disponible ahora mismo en este navegador.");
-    return;
-  }
-
-  deferredInstallPrompt.prompt();
-  await deferredInstallPrompt.userChoice;
-  deferredInstallPrompt = null;
-  updateInstallUi();
 });
 
 modeInputs.forEach((r) => {
@@ -346,26 +277,10 @@ document.addEventListener("keydown", (event) => {
     setUiByMode();
     return;
   }
-  if (event.key === "Escape") {
-    terminarSesion();
-    return;
-  }
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "r") {
     event.preventDefault();
     reiniciarSesion();
   }
 });
 
-window.addEventListener("beforeinstallprompt", (event) => {
-  event.preventDefault();
-  deferredInstallPrompt = event;
-  updateInstallUi();
-});
-
-window.addEventListener("appinstalled", () => {
-  deferredInstallPrompt = null;
-  updateInstallUi();
-});
-
 setUiByMode();
-updateInstallUi();
