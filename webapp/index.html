@@ -29,7 +29,7 @@
         </div>
 
         <label id="totalLabel" for="totalInput">Total de preguntas</label>
-        <input id="totalInput" type="number" min="1" inputmode="numeric" placeholder="Ejemplo: 15" />
+        <input id="totalInput" type="number" min="1" inputmode="numeric" placeholder="Ejemplo: 20" />
 
         <button id="btnIniciar" class="btn btn-primary">Iniciar corrección</button>
       </section>
@@ -42,6 +42,13 @@
 
         <label id="entradaLabel" for="entradaAlumno">Aciertos del alumno</label>
         <input id="entradaAlumno" type="text" placeholder="Ejemplo: 17" />
+        <div id="codigoLegend" class="code-legend" hidden>
+          <span><code>b</code> Bien</span>
+          <span><code>b-</code> Bien -</span>
+          <span><code>r</code> Regular</span>
+          <span><code>r-</code> Regular -</span>
+          <span><code>x</code> Mal</span>
+        </div>
 
         <div class="help" id="helpText">
           En ejercicios escribe un código sin comas, por ejemplo: <code>bb-rx</code>

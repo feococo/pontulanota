@@ -11,6 +11,7 @@ const totalLabel = document.getElementById("totalLabel");
 const totalInput = document.getElementById("totalInput");
 const entradaLabel = document.getElementById("entradaLabel");
 const entradaAlumno = document.getElementById("entradaAlumno");
+const codigoLegend = document.getElementById("codigoLegend");
 const resultado = document.getElementById("resultado");
 const historial = document.getElementById("historial");
 const alumnoLabel = document.getElementById("alumnoLabel");
@@ -40,11 +41,22 @@ function setUiByMode() {
     entradaLabel.textContent = "Aciertos del alumno";
     entradaAlumno.placeholder = "Ejemplo: 17";
     modoActivo.textContent = "Modo: Preguntas";
+    codigoLegend.hidden = true;
+    codigoLegend.style.display = "none";
+    if (!state.started) {
+      helpText.innerHTML = "Ingresa el número de respuestas correctas";
+    }
   } else {
     totalLabel.textContent = "Total de ejercicios";
     entradaLabel.textContent = "Código del alumno (sin comas)";
     entradaAlumno.placeholder = "Ejemplo: bb-rx";
     modoActivo.textContent = "Modo: Ejercicios";
+    codigoLegend.hidden = false;
+    codigoLegend.style.display = "flex";
+    if (!state.started) {
+      helpText.innerHTML =
+        'En ejercicios escribe un código sin comas, por ejemplo: <code>bb-rx</code>';
+    }
   }
 }
 
@@ -89,34 +101,51 @@ function formatCodigo(raw) {
   return tokens.join(" ");
 }
 
-function renderResultado(notaTxt, raw) {
+function getNotaClass(nota) {
+  return nota >= 5 ? "pass" : "fail";
+}
+
+function renderResultado(nota, notaTxt, raw) {
+  const notaClass = getNotaClass(nota);
+  resultado.classList.remove("pass", "fail");
+  resultado.classList.add(notaClass);
+
   if (state.mode === "ejercicios") {
     const codigo = formatCodigo(raw);
     resultado.innerHTML =
       `<span class="result-label">Nota alumno ${state.alumno}:</span>` +
-      `<span class="result-score">${notaTxt}</span>` +
+      `<span class="result-score ${notaClass}">${notaTxt}</span>` +
       `<span class="result-code-label">Codigo:</span>` +
       `<span class="result-code">${codigo}</span>`;
     return;
   }
 
-  resultado.textContent = `Nota del alumno ${state.alumno}: ${notaTxt}`;
+  resultado.innerHTML =
+    `<span class="result-label">Nota del alumno ${state.alumno}:</span>` +
+    `<span class="result-score ${notaClass}">${notaTxt}</span>` +
+    `<span class="result-code-label">Respuestas correctas:</span>` +
+    `<span class="result-code">${raw}</span>`;
 }
 
-function buildHistorialItem(notaTxt, raw) {
+function buildHistorialItem(nota, notaTxt, raw) {
   const li = document.createElement("li");
+  const notaClass = getNotaClass(nota);
 
   if (state.mode === "ejercicios") {
     const codigo = formatCodigo(raw);
     li.className = "historial-item";
     li.innerHTML =
       `<span class="hist-alumno">Alumno ${state.alumno}</span>` +
-      `<span class="hist-nota">${notaTxt}</span>` +
+      `<span class="hist-nota ${notaClass}">${notaTxt}</span>` +
       `<span class="hist-codigo">${codigo}</span>`;
     return li;
   }
 
-  li.textContent = `Alumno ${state.alumno}: ${notaTxt}`;
+  li.className = "historial-item";
+  li.innerHTML =
+    `<span class="hist-alumno">Alumno ${state.alumno}</span>` +
+    `<span class="hist-nota ${notaClass}">${notaTxt}</span>` +
+    `<span class="hist-codigo">Respuestas correctas ${raw}</span>`;
   return li;
 }
 
@@ -141,9 +170,9 @@ function iniciarSesion() {
     const valuePer = 10 / state.total;
     helpText.innerHTML =
       `Escala: <code>b</code>=100%, <code>b-</code>=75%, <code>r</code>=50%, ` +
-      `<code>r-</code>=25%, <code>x</code>=0%. Cada ejercicio vale ${valuePer.toFixed(4)} puntos.`;
+      `<code>r-</code>=25%, <code>x</code>=0%.<br>Cada ejercicio vale ${valuePer.toFixed(2)} puntos.`;
   } else {
-    helpText.innerHTML = "Introduce los aciertos del alumno y pulsa Calcular nota.";
+    helpText.innerHTML = "Ingresa el número de respuestas correctas";
   }
 }
 
@@ -183,8 +212,8 @@ function calcularNota() {
   }
 
   const notaTxt = nota.toFixed(2);
-  renderResultado(notaTxt, raw);
-  const li = buildHistorialItem(notaTxt, raw);
+  renderResultado(nota, notaTxt, raw);
+  const li = buildHistorialItem(nota, notaTxt, raw);
   historial.prepend(li);
 
   state.alumno += 1;
@@ -205,8 +234,7 @@ function terminarSesion() {
 function reiniciarSesion() {
   resetSession();
   setUiByMode();
-  helpText.innerHTML =
-    'En ejercicios escribe un código sin comas, por ejemplo: <code>bb-rx</code>';
+  helpText.innerHTML = "Ingresa el número de respuestas correctas";
 }
 
 btnIniciar.addEventListener("click", () => {
@@ -265,10 +293,5 @@ document.addEventListener("keydown", (event) => {
     reiniciarSesion();
   }
 });
-
-if (window.matchMedia("(min-width: 900px)").matches) {
-  helpText.innerHTML +=
-    "<br>Teclado: Enter iniciar/calcular, Alt+1 preguntas, Alt+2 ejercicios, Esc terminar, Ctrl/Cmd+R reiniciar.";
-}
 
 setUiByMode();
