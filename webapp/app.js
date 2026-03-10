@@ -32,12 +32,25 @@ function getMode() {
   return modeInputs.find((r) => r.checked)?.value || "preguntas";
 }
 
+function isIosDevice() {
+  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+}
+
+function focusEntradaAlumno() {
+  if (isIosDevice()) {
+    return;
+  }
+  entradaAlumno.focus();
+}
+
 function setUiByMode() {
   const mode = getMode();
   state.mode = mode;
   if (mode === "preguntas") {
     totalLabel.textContent = "Total de preguntas";
     entradaLabel.textContent = "Aciertos del alumno";
+    entradaAlumno.setAttribute("inputmode", "numeric");
+    entradaAlumno.setAttribute("autocomplete", "off");
     entradaAlumno.placeholder = "Ejemplo: 17";
     modoActivo.textContent = "Modo: Preguntas";
     codigoLegend.hidden = true;
@@ -48,6 +61,8 @@ function setUiByMode() {
   } else {
     totalLabel.textContent = "Total de ejercicios";
     entradaLabel.textContent = "Código del alumno (sin comas)";
+    entradaAlumno.setAttribute("inputmode", "text");
+    entradaAlumno.setAttribute("autocomplete", "off");
     entradaAlumno.placeholder = "Ejemplo: bb-rx";
     modoActivo.textContent = "Modo: Ejercicios";
     codigoLegend.hidden = false;
@@ -170,7 +185,7 @@ function iniciarSesion() {
   resultado.textContent = "Sesión iniciada.";
   historial.innerHTML = "";
   entradaAlumno.value = "";
-  entradaAlumno.focus();
+  focusEntradaAlumno();
 
   if (state.mode === "ejercicios") {
     const valuePer = 10 / state.total;
@@ -225,7 +240,7 @@ function calcularNota() {
   state.alumno += 1;
   alumnoLabel.textContent = `Alumno ${state.alumno}`;
   entradaAlumno.value = "";
-  entradaAlumno.focus();
+  focusEntradaAlumno();
 }
 
 function reiniciarSesion() {
