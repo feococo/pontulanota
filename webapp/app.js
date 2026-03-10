@@ -17,10 +17,15 @@ const historial = document.getElementById("historial");
 const alumnoLabel = document.getElementById("alumnoLabel");
 const modoActivo = document.getElementById("modoActivo");
 const helpText = document.getElementById("helpText");
+const installBox = document.getElementById("installBox");
+const btnInstalarApp = document.getElementById("btnInstalarApp");
+const installHint = document.getElementById("installHint");
 const btnIniciar = document.getElementById("btnIniciar");
 const btnCalcular = document.getElementById("btnCalcular");
 const btnTerminar = document.getElementById("btnTerminar");
 const btnReiniciar = document.getElementById("btnReiniciar");
+
+let deferredInstallPrompt = null;
 
 let state = {
   started: false,
@@ -31,6 +36,39 @@ let state = {
 
 function getMode() {
   return modeInputs.find((r) => r.checked)?.value || "preguntas";
+}
+
+function isIosMobile() {
+  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+}
+
+function isAndroidMobile() {
+  return /android/i.test(window.navigator.userAgent);
+}
+
+function isStandalone() {
+  return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+}
+
+function updateInstallUi() {
+  const mobileOs = isIosMobile() || isAndroidMobile();
+  if (!mobileOs || isStandalone()) {
+    installBox.hidden = true;
+    return;
+  }
+
+  installBox.hidden = false;
+
+  if (isIosMobile()) {
+    installHint.hidden = false;
+    installHint.textContent = "En iPhone o iPad se instala desde Compartir -> Anadir a pantalla de inicio.";
+    return;
+  }
+
+  installHint.hidden = deferredInstallPrompt !== null;
+  if (!installHint.hidden) {
+    installHint.textContent = "Si el navegador lo permite, podras instalarla desde este boton.";
+  }
 }
 
 function setUiByMode() {
@@ -105,31 +143,36 @@ function getNotaClass(nota) {
   return nota >= 5 ? "pass" : "fail";
 }
 
+function getRedondeo(nota) {
+  return (Math.round(nota * 2) / 2).toFixed(1);
+}
+
 function renderResultado(nota, notaTxt, raw) {
   const notaClass = getNotaClass(nota);
+  const redondeoTxt = getRedondeo(nota);
   resultado.classList.remove("pass", "fail");
   resultado.classList.add(notaClass);
 
   if (state.mode === "ejercicios") {
-    const codigo = formatCodigo(raw);
     resultado.innerHTML =
       `<span class="result-label">Nota alumno ${state.alumno}:</span>` +
       `<span class="result-score ${notaClass}">${notaTxt}</span>` +
-      `<span class="result-code-label">Codigo:</span>` +
-      `<span class="result-code">${codigo}</span>`;
+      `<span class="result-code-label">Redondeo:</span>` +
+      `<span class="result-code ${notaClass}">${redondeoTxt}</span>`;
     return;
   }
 
   resultado.innerHTML =
     `<span class="result-label">Nota del alumno ${state.alumno}:</span>` +
     `<span class="result-score ${notaClass}">${notaTxt}</span>` +
-    `<span class="result-code-label">Respuestas correctas:</span>` +
-    `<span class="result-code">${raw}</span>`;
+    `<span class="result-code-label">Redondeo:</span>` +
+    `<span class="result-code ${notaClass}">${redondeoTxt}</span>`;
 }
 
 function buildHistorialItem(nota, notaTxt, raw) {
   const li = document.createElement("li");
   const notaClass = getNotaClass(nota);
+  const redondeoTxt = getRedondeo(nota);
 
   if (state.mode === "ejercicios") {
     const codigo = formatCodigo(raw);
@@ -137,6 +180,7 @@ function buildHistorialItem(nota, notaTxt, raw) {
     li.innerHTML =
       `<span class="hist-alumno">Alumno ${state.alumno}</span>` +
       `<span class="hist-nota ${notaClass}">${notaTxt}</span>` +
+      `<span class="hist-codigo ${notaClass}">Redondeo ${redondeoTxt}</span>` +
       `<span class="hist-codigo">${codigo}</span>`;
     return li;
   }
@@ -145,6 +189,7 @@ function buildHistorialItem(nota, notaTxt, raw) {
   li.innerHTML =
     `<span class="hist-alumno">Alumno ${state.alumno}</span>` +
     `<span class="hist-nota ${notaClass}">${notaTxt}</span>` +
+    `<span class="hist-codigo ${notaClass}">Redondeo ${redondeoTxt}</span>` +
     `<span class="hist-codigo">Respuestas correctas ${raw}</span>`;
   return li;
 }
@@ -253,6 +298,23 @@ btnReiniciar.addEventListener("click", () => {
   reiniciarSesion();
 });
 
+btnInstalarApp.addEventListener("click", async () => {
+  if (isIosMobile()) {
+    window.alert("Para instalarla en iPhone o iPad, pulsa Compartir y despues 'Anadir a pantalla de inicio'.");
+    return;
+  }
+
+  if (!deferredInstallPrompt) {
+    window.alert("La instalacion no esta disponible ahora mismo en este navegador.");
+    return;
+  }
+
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  updateInstallUi();
+});
+
 modeInputs.forEach((r) => {
   r.addEventListener("change", () => {
     setUiByMode();
@@ -294,4 +356,16 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+window.addEventListener("beforeinstallprompt", (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  updateInstallUi();
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredInstallPrompt = null;
+  updateInstallUi();
+});
+
 setUiByMode();
+updateInstallUi();
