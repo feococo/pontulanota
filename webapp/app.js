@@ -17,6 +17,7 @@ const historial = document.getElementById("historial");
 const alumnoLabel = document.getElementById("alumnoLabel");
 const modoActivo = document.getElementById("modoActivo");
 const helpText = document.getElementById("helpText");
+const toggleRedondeo = document.getElementById("toggleRedondeo");
 const btnIniciar = document.getElementById("btnIniciar");
 const btnCalcular = document.getElementById("btnCalcular");
 const btnReiniciar = document.getElementById("btnReiniciar");
@@ -30,6 +31,14 @@ let state = {
 
 function getMode() {
   return modeInputs.find((r) => r.checked)?.value || "preguntas";
+}
+
+function isAppleMobileDevice() {
+  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+}
+
+function allowGlobalShortcuts() {
+  return !isAppleMobileDevice();
 }
 
 function focusEntradaAlumno() {
@@ -126,16 +135,16 @@ function renderResultado(nota, notaTxt, raw) {
     resultado.innerHTML =
       `<span class="result-label">Nota alumno ${state.alumno}:</span>` +
       `<span class="result-score ${notaClass}">${notaTxt}</span>` +
-      `<span class="result-code-label">Redondeo:</span>` +
-      `<span class="result-code ${notaClass}">${redondeoTxt}</span>`;
+      `<span class="result-code-label rounding-group">Redondeo:</span>` +
+      `<span class="result-code ${notaClass} rounding-group">${redondeoTxt}</span>`;
     return;
   }
 
   resultado.innerHTML =
     `<span class="result-label">Nota del alumno ${state.alumno}:</span>` +
     `<span class="result-score ${notaClass}">${notaTxt}</span>` +
-    `<span class="result-code-label">Redondeo:</span>` +
-    `<span class="result-code ${notaClass}">${redondeoTxt}</span>`;
+    `<span class="result-code-label rounding-group">Redondeo:</span>` +
+    `<span class="result-code ${notaClass} rounding-group">${redondeoTxt}</span>`;
 }
 
 function buildHistorialItem(nota, notaTxt, raw) {
@@ -149,7 +158,7 @@ function buildHistorialItem(nota, notaTxt, raw) {
     li.innerHTML =
       `<span class="hist-alumno">Alumno ${state.alumno}</span>` +
       `<span class="hist-nota ${notaClass}">${notaTxt}</span>` +
-      `<span class="hist-codigo ${notaClass}">Redondeo ${redondeoTxt}</span>` +
+      `<span class="hist-codigo ${notaClass} rounding-group">Redondeo ${redondeoTxt}</span>` +
       `<span class="hist-codigo">${codigo}</span>`;
     return li;
   }
@@ -158,7 +167,7 @@ function buildHistorialItem(nota, notaTxt, raw) {
   li.innerHTML =
     `<span class="hist-alumno">Alumno ${state.alumno}</span>` +
     `<span class="hist-nota ${notaClass}">${notaTxt}</span>` +
-    `<span class="hist-codigo ${notaClass}">Redondeo ${redondeoTxt}</span>` +
+    `<span class="hist-codigo ${notaClass} rounding-group">Redondeo ${redondeoTxt}</span>` +
     `<span class="hist-codigo">Respuestas correctas ${raw}</span>`;
   return li;
 }
@@ -254,6 +263,10 @@ btnReiniciar.addEventListener("click", () => {
   reiniciarSesion();
 });
 
+toggleRedondeo.addEventListener("change", () => {
+  document.body.classList.toggle("hide-rounding", !toggleRedondeo.checked);
+});
+
 modeInputs.forEach((r) => {
   r.addEventListener("change", () => {
     setUiByMode();
@@ -275,6 +288,9 @@ entradaAlumno.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (!allowGlobalShortcuts()) {
+    return;
+  }
   if (event.altKey && event.key === "1") {
     modeInputs.find((r) => r.value === "preguntas").checked = true;
     setUiByMode();
@@ -292,3 +308,4 @@ document.addEventListener("keydown", (event) => {
 });
 
 setUiByMode();
+document.body.classList.toggle("hide-rounding", !toggleRedondeo.checked);

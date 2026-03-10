@@ -102,6 +102,19 @@ label {
   font-weight: 500;
 }
 
+.options-title {
+  margin: 22px 0 8px;
+  color: var(--ink);
+}
+
+.option-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 2px 0 14px;
+  font-weight: 600;
+}
+
 input[type="text"],
 input[type="number"] {
   width: 100%;
@@ -231,6 +244,10 @@ input:focus {
 
 .result-code {
   color: #0f172a;
+}
+
+body.hide-rounding .rounding-group {
+  display: none !important;
 }
 
 .history-title {
