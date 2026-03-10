@@ -45,39 +45,6 @@ function allowGlobalShortcuts() {
   return !isAppleMobileDevice();
 }
 
-function isEditingKey(event) {
-  return [
-    "Backspace",
-    "Delete",
-    "ArrowLeft",
-    "ArrowRight",
-    "ArrowUp",
-    "ArrowDown",
-    "Tab",
-    "Home",
-    "End",
-    "Escape",
-    "Enter"
-  ].includes(event.key);
-}
-
-function isAllowedTotalKey(event) {
-  if (isEditingKey(event)) {
-    return true;
-  }
-  return /^[0-9]$/.test(event.key);
-}
-
-function isAllowedAlumnoKey(event) {
-  if (isEditingKey(event)) {
-    return true;
-  }
-  if (state.mode === "preguntas") {
-    return /^[0-9]$/.test(event.key);
-  }
-  return /^[brxBRX -]$/.test(event.key);
-}
-
 function focusEntradaAlumno() {
   if (isAppleStandaloneWebapp()) {
     return;
@@ -314,10 +281,6 @@ modeInputs.forEach((r) => {
 });
 
 totalInput.addEventListener("keydown", (event) => {
-  if (isAppleMobileDevice() && !isAllowedTotalKey(event)) {
-    event.preventDefault();
-    return;
-  }
   if (event.key === "Enter") {
     event.preventDefault();
     iniciarSesion();
@@ -325,10 +288,6 @@ totalInput.addEventListener("keydown", (event) => {
 });
 
 entradaAlumno.addEventListener("keydown", (event) => {
-  if (isAppleMobileDevice() && !isAllowedAlumnoKey(event)) {
-    event.preventDefault();
-    return;
-  }
   if (event.key === "Enter") {
     event.preventDefault();
     calcularNota();
